@@ -1,0 +1,53 @@
+name: Ledger contracts
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizers: ["OFF", "ON"]
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: ledger
+          POSTGRES_PASSWORD: integration-only-password
+          POSTGRES_DB: ledger_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U ledger -d ledger_test"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      DATABASE_URL: host=127.0.0.1 port=5432 dbname=ledger_test user=ledger password=integration-only-password connect_timeout=3
+      ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+      UBSAN_OPTIONS: halt_on_error=1
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libpq-dev postgresql-client
+      - run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f sql/001_schema.sql
+      - run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZERS=${{ matrix.sanitizers }}
+      - run: cmake --build build --parallel 2
+      - run: ctest --test-dir build --output-on-failure
+      - name: Keep failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagnostics-${{ matrix.sanitizers }}
+          path: |
+            build/ledger-test-server.log
+            build/Testing/Temporary/LastTest.log
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose up --build -d
+      - name: Readiness and authenticated HTTP request
+        run: |
+          curl --fail --retry 40 --retry-all-errors --retry-delay 2 http://127.0.0.1:8080/health
+          curl --fail -H 'Authorization: Bearer local-ledger-token-change-me' -H 'Content-Type: application/json' -d '{"id":"compose-demo","opening_balance":100}' http://127.0.0.1:8080/v1/accounts
+      - if: always()
+        run: docker compose logs && docker compose down -v
