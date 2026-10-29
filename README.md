@@ -1,3 +1,5 @@
+![Ledger C++](docs/cover.svg)
+
 # Ledger C++
 
 [![Ledger contracts](https://github.com/ASimonyan1/ledger-cpp/actions/workflows/cpp.yml/badge.svg)](https://github.com/ASimonyan1/ledger-cpp/actions)

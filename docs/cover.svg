@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Ledger C++</title><desc id="desc">C++20 and PostgreSQL: atomic transfers, idempotency and concurrent requests</desc>
+  <rect width="1200" height="340" rx="24" fill="#101d32"/>
+  <path d="M820 0v340M900 0v340M980 0v340M1060 0v340M1140 0v340M780 70h420M780 150h420M780 230h420M780 310h420" stroke="#1f344e"/>
+  <rect x="48" y="45" width="125" height="30" rx="7" fill="#21443f"/>
+  <text x="63" y="66" font-family="Arial,sans-serif" font-size="16" fill="#a6e8ca">C++ BACKEND</text>
+  <text x="48" y="148" font-family="Arial,sans-serif" font-size="60" font-weight="700" fill="#f4f7fc">Ledger C++</text>
+  <text x="50" y="198" font-family="Arial,sans-serif" font-size="25" fill="#c3d0e3">Atomic transfers. Stable request keys.</text>
+  <text x="50" y="275" font-family="Arial,sans-serif" font-size="20" fill="#8fafc8">C++20 / PostgreSQL / HTTP / Integration tests</text>
+  <rect x="880" y="93" width="245" height="160" rx="18" fill="#152d43" stroke="#487e82" stroke-width="2"/>
+  <text x="910" y="139" font-family="monospace" font-size="22" fill="#83d5b0">BEGIN</text>
+  <text x="910" y="177" font-family="monospace" font-size="21" fill="#dbe6ef">debit + credit</text>
+  <text x="910" y="218" font-family="monospace" font-size="22" fill="#83d5b0">COMMIT</text>
+</svg>
