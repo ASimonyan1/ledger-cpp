@@ -49,5 +49,8 @@ jobs:
         run: |
           curl --fail --retry 40 --retry-all-errors --retry-delay 2 http://127.0.0.1:8080/health
           curl --fail -H 'Authorization: Bearer local-ledger-token-change-me' -H 'Content-Type: application/json' -d '{"id":"compose-demo","opening_balance":100}' http://127.0.0.1:8080/v1/accounts
+          docker compose restart api
+          curl --fail --retry 40 --retry-all-errors --retry-delay 2 http://127.0.0.1:8080/health
+          curl --fail -H 'Authorization: Bearer local-ledger-token-change-me' http://127.0.0.1:8080/v1/accounts/compose-demo | python3 -c 'import sys,json; assert json.load(sys.stdin)["balance"]==100'
       - if: always()
         run: docker compose logs && docker compose down -v

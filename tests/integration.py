@@ -166,6 +166,8 @@ def main():
             except subprocess.TimeoutExpired:
                 process.kill()
                 process.wait()
+            if os.name != "nt" and process.returncode != 0:
+                raise RuntimeError("Server failed during shutdown (including sanitizer checks): " + log.read_text())
     raise SystemExit(0 if result.wasSuccessful() else 1)
 
 
